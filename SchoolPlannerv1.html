@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>School Planner By TaylorTech</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&family=Inter:wght@400;700&family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #1a1a2e;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      max-width: 900px;
+      width: 100%;
+      padding: 20px;
+      background-color: #2a2a44;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+    h1, h2, h3 {
+      color: #bb86fc;
+      font-family: 'Montserrat', sans-serif;
+      text-align: center;
+    }
+    input, button, textarea, select {
+      margin: 8px 0;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #3f3f6e;
+      color: #e0e0e0;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    input::placeholder, textarea::placeholder {
+      color: #999;
+    }
+    button {
+      background-color: #00e0b3;
+      color: #1a1a2e;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #00b38c;
+    }
+    .student, .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 10px;
+      background-color: #3a3a5a;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    .student span, .task-item span {
+      margin-right: 15px;
+    }
+    .student button, .task-item button {
+      margin: 0 4px;
+      padding: 8px 12px;
+    }
+    .task-item.completed span {
+      text-decoration: line-through;
+      color: #888;
+    }
+    .section {
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 15px;
+      background-color: #2d2d4d;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    textarea {
+      width: 100%;
+      min-height: 120px;
+    }
+    [contenteditable="true"] {
+      border: 2px solid #5d5d8e;
+      padding: 15px;
+      min-height: 200px;
+      background-color: #1a1a2e;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+      resize: vertical;
+    }
+    [contenteditable="true"]:focus {
+      outline: none;
+      border-color: #bb86fc;
+      box-shadow: 0 0 0 3px #bb86fc;
+    }
+    .alignment-buttons button {
+      background-color: #4a4a75;
+    }
+    .alignment-buttons button:hover {
+      background-color: #6a6a95;
+    }
+    #timerDisplay {
+      font-size: 2.5em;
+      font-family: 'Courier New', monospace;
+      color: #00e0b3;
+      text-align: center;
+      margin: 15px 0;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background-color: #2a2a44;
+      padding: 25px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    .modal-content h3 {
+      color: #00e0b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><span style="color: #00e0b3;">🌟</span> School Planner <span style="color: #00e0b3;">🌟</span></h1>
+    <h2>By TaylorTech</h2>
+
+    <div class="section">
+      <h2>🧑‍🎓 Student Tracker</h2>
+      <input id="studentName" type="text" placeholder="Enter student name">
+      <button onclick="addStudent()">Add Student</button>
+      <div id="studentsList"></div>
+    </div>
+
+    <div class="section">
+      <h2>📝 Teacher Notes</h2>
+      <textarea id="teacherNotes" placeholder="Write your notes here..."></textarea><br>
+      <button onclick="saveNotes()">Save Notes</button>
+    </div>
+
+    <div class="section">
+      <h2>✅ Task Manager</h2>
+      <input id="taskInput" type="text" placeholder="Add a new task">
+      <button onclick="addTask()">Add Task</button>
+      <ul id="taskList" style="list-style: none; padding: 0;"></ul>
+    </div>
+
+    <div class="section">
+      <h2>⏱️ Study Timer</h2>
+      <div id="timerDisplay">00:00</div>
+      <div style="text-align: center;">
+        <button onclick="startTimer()">Start</button>
+        <button onclick="pauseTimer()">Pause</button>
+        <button onclick="resetTimer()">Reset</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📚 Lesson Maker</h2>
+      <label for="fontSelector"><strong>Font Style:</strong></label>
+      <select id="fontSelector" onchange="changeFont('lessonEditor')">
+        <option value="Arial">Arial</option>
+        <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+        <option value="'Times New Roman', serif">Times New Roman</option>
+        <option value="'Courier New', monospace">Courier New</option>
+        <option value="Verdana">Verdana</option>
+        <option value="'Roboto', sans-serif">Roboto</option>
+        <option value="'Montserrat', sans-serif">Montserrat</option>
+        <option value="'Fredoka', sans-serif">Fredoka</option>
+      </select>
+      <div class="alignment-buttons">
+        <strong>Text Alignment:</strong>
+        <button onclick="setAlignment('lessonEditor', 'Left')">⬅️</button>
+        <button onclick="setAlignment('lessonEditor', 'Center')">⏺</button>
+        <button onclick="setAlignment('lessonEditor', 'Right')">➡️</button>
+        <button onclick="setAlignment('lessonEditor', 'Full')">📏</button>
+      </div>
+      <div id="lessonEditor" contenteditable="true">
+        <p><strong>Lesson Title:</strong></p>
+        <p>Start typing your lesson content here...</p>
+      </div>
+      <br>
+      <button onclick="exportLessonAsPNG()">🖼 Export Lesson as PNG</button>
+    </div>
+
+    <div class="section">
+      <h2>📽️ Slide Maker</h2>
+      <label for="slideFontSelector"><strong>Slide Font:</strong></label>
+      <select id="slideFontSelector" onchange="changeFont('slideEditor')">
+        <option value="Arial">Arial</option>
+        <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+        <option value="'Times New Roman', serif">Times New Roman</option>
+        <option value="'Courier New', monospace">Courier New</option>
+        <option value="Verdana">Verdana</option>
+        <option value="'Roboto', sans-serif">Roboto</option>
+        <option value="'Montserrat', sans-serif">Montserrat</option>
+        <option value="'Fredoka', sans-serif">Fredoka</option>
+      </select>
+      <div class="alignment-buttons">
+        <strong>Text Alignment:</strong>
+        <button onclick="setAlignment('slideEditor', 'Left')">⬅️</button>
+        <button onclick="setAlignment('slideEditor', 'Center')">⏺</button>
+        <button onclick="setAlignment('slideEditor', 'Right')">➡️</button>
+        <button onclick="setAlignment('slideEditor', 'Full')">📏</button>
+      </div>
+      <div id="slideEditor" contenteditable="true">
+        <p><strong>Slide 1 Title</strong></p>
+        <p>This is your first slide.</p>
+      </div>
+      <br>
+      <button onclick="addSlide()">➕ Add Slide</button>
+      <button onclick="prevSlide()">⬅️ Previous</button>
+      <button onclick="nextSlide()">➡️ Next</button>
+      <button onclick="exportSlidesAsText()">📥 Export Slides</button>
+    </div>
+
+  </div>
+
+  <div id="customModal" class="modal">
+    <div class="modal-content">
+      <h3 id="modalMessage"></h3>
+      <button onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+
+  <script>
+    let students = [];
+    let notes = '';
+    let tasks = [];
+    let slides = [{ content: "<p><strong>Slide 1 Title</strong></p><p>This is your first slide.</p>" }];
+    let currentSlideIndex = 0;
+    let timerInterval = null;
+    let timerSeconds = 0;
+
+    const studentsKey = 'students';
+    const notesKey = 'teacherNotes';
+    const tasksKey = 'tasks';
+
+    function showModal(message) {
+      document.getElementById('modalMessage').innerText = message;
+      document.getElementById('customModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('customModal').style.display = 'none';
+    }
+
+    function loadData() {
+      const storedStudents = localStorage.getItem(studentsKey);
+      if (storedStudents) students = JSON.parse(storedStudents);
+      const storedNotes = localStorage.getItem(notesKey);
+      if (storedNotes) document.getElementById('teacherNotes').value = storedNotes;
+      const storedTasks = localStorage.getItem(tasksKey);
+      if (storedTasks) tasks = JSON.parse(storedTasks);
+      renderStudents();
+      renderTasks();
+    }
+
+    function saveData() {
+      localStorage.setItem(studentsKey, JSON.stringify(students));
+      localStorage.setItem(notesKey, document.getElementById('teacherNotes').value);
+      localStorage.setItem(tasksKey, JSON.stringify(tasks));
+    }
+
+    function addStudent() {
+      const nameInput = document.getElementById('studentName');
+      const name = nameInput.value.trim();
+      if (name) {
+        students.push({ name: name, points: 0 });
+        nameInput.value = '';
+        saveData();
+        renderStudents();
+      }
+    }
+
+    function removeStudent(index) {
+      students.splice(index, 1);
+      saveData();
+      renderStudents();
+    }
+
+    function updatePoints(index, change) {
+      students[index].points += change;
+      saveData();
+      renderStudents();
+    }
+
+    function renderStudents() {
+      const container = document.getElementById('studentsList');
+      container.innerHTML = '';
+      students.forEach((student, index) => {
+        const div = document.createElement('div');
+        div.className = 'student';
+        div.innerHTML = `
+          <span><strong>${student.name}</strong></span>
+          <span>Points: ${student.points}</span>
+          <div>
+            <button onclick="updatePoints(${index}, 1)">+1</button>
+            <button onclick="updatePoints(${index}, -1)">-1</button>
+            <button onclick="removeStudent(${index})">Remove</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function saveNotes() {
+      saveData();
+      showModal('Notes saved!');
+    }
+
+    function addTask() {
+      const taskInput = document.getElementById('taskInput');
+      const taskText = taskInput.value.trim();
+      if (taskText) {
+        tasks.push({ text: taskText, completed: false });
+        taskInput.value = '';
+        saveData();
+        renderTasks();
+      }
+    }
+
+    function toggleTask(index) {
+      tasks[index].completed = !tasks[index].completed;
+      saveData();
+      renderTasks();
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      saveData();
+      renderTasks();
+    }
+
+    function renderTasks() {
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.className = 'task-item' + (task.completed ? ' completed' : '');
+        li.innerHTML = `
+          <span style="flex-grow: 1;">${task.text}</span>
+          <div>
+            <button onclick="toggleTask(${index})">${task.completed ? 'Uncheck' : 'Check'}</button>
+            <button onclick="deleteTask(${index})">Delete</button>
+          </div>
+        `;
+        taskList.appendChild(li);
+      });
+    }
+
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      const paddedMinutes = String(minutes).padStart(2, '0');
+      const paddedSeconds = String(remainingSeconds).padStart(2, '0');
+      return `${paddedMinutes}:${paddedSeconds}`;
+    }
+
+    function startTimer() {
+      if (!timerInterval) {
+        timerInterval = setInterval(() => {
+          timerSeconds++;
+          document.getElementById('timerDisplay').innerText = formatTime(timerSeconds);
+        }, 1000);
+      }
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timerSeconds = 0;
+      document.getElementById('timerDisplay').innerText = '00:00';
+    }
+
+    function changeFont(editorId) {
+      const font = document.getElementById(editorId === 'lessonEditor' ? 'fontSelector' : 'slideFontSelector').value;
+      document.getElementById(editorId).style.fontFamily = font;
+    }
+
+    function setAlignment(editorId, alignType) {
+      const editor = document.getElementById(editorId);
+      editor.focus();
+      document.execCommand('justify' + alignType);
+    }
+
+    async function exportLessonAsPNG() {
+      const lessonEditor = document.getElementById('lessonEditor');
+      const canvas = await html2canvas(lessonEditor, { backgroundColor: "#1a1a2e" });
+      const link = document.createElement('a');
+      link.download = 'lesson.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    function addSlide() {
+      slides.push({ content: "<p>New Slide</p>" });
+      currentSlideIndex = slides.length - 1;
+      renderCurrentSlide();
+    }
+
+    function prevSlide() {
+      if (currentSlideIndex > 0) {
+        saveCurrentSlide();
+        currentSlideIndex--;
+        renderCurrentSlide();
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlideIndex < slides.length - 1) {
+        saveCurrentSlide();
+        currentSlideIndex++;
+        renderCurrentSlide();
+      }
+    }
+
+    function saveCurrentSlide() {
+      slides[currentSlideIndex].content = document.getElementById("slideEditor").innerHTML;
+    }
+
+    function renderCurrentSlide() {
+      const slideEditor = document.getElementById("slideEditor");
+      slideEditor.innerHTML = slides[currentSlideIndex].content;
+      const font = document.getElementById("slideFontSelector").value;
+      slideEditor.style.fontFamily = font;
+    }
+
+    function exportSlidesAsText() {
+      saveCurrentSlide();
+      const zip = new JSZip();
+      const slideText = slides.map((s, i) => `--- SLIDE ${i + 1} ---\n\n${s.content.replace(/<[^>]*>/g, '')}`).join("\n\n");
+      zip.file("slides.txt", slideText);
+      zip.generateAsync({ type: "blob" }).then(content => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = "slides.zip";
+        link.click();
+      });
+    }
+
+    window.onload = loadData;
+  </script>
+</body>
+</html>
