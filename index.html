@@ -2,233 +2,354 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>School Planner By TaylorTech</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Planner V2 - Organized</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&family=Inter:wght@400;700&family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --color-primary: #bb86fc;
+      --color-accent: #00e0b3;
+      --color-bg-main: #1a1a2e;
+      --color-bg-secondary: #2a2a44;
+      --color-bg-section: #2d2d4d;
+      --color-bg-item: #3a3a5a;
+      --color-input: #3f3f6e;
+      --color-text: #e0e0e0;
+      --color-text-dim: #999;
+      --color-border: #5d5d8e;
+    }
+    .theme-green {
+      --color-primary: #00e676;
+      --color-accent: #64ffda;
+      --color-bg-main: #1b5e20;
+      --color-bg-secondary: #2e7d32;
+      --color-bg-section: #388e3c;
+      --color-bg-item: #43a047;
+      --color-input: #66bb6a;
+    }
+    .theme-red {
+      --color-primary: #ff5252;
+      --color-accent: #ff8a80;
+      --color-bg-main: #3e031a;
+      --color-bg-secondary: #5d0426;
+      --color-bg-section: #7f0735;
+      --color-bg-item: #a00743;
+      --color-input: #c62828;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
       margin: 0;
       padding: 20px;
-      background-color: #1a1a2e;
-      color: #e0e0e0;
+      background-color: var(--color-bg-main);
+      color: var(--color-text);
       display: flex;
       flex-direction: column;
       align-items: center;
     }
     .container {
-      max-width: 900px;
+      max-width: 1200px;
       width: 100%;
       padding: 20px;
-      background-color: #2a2a44;
+      background-color: var(--color-bg-secondary);
       border-radius: 15px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
-    h1, h2, h3 {
-      color: #bb86fc;
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    h1, h2 {
+      color: var(--color-primary);
       font-family: 'Montserrat', sans-serif;
       text-align: center;
     }
+    .section {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 15px;
+      background-color: var(--color-bg-section);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    .section-full {
+      grid-column: 1 / -1; 
+    }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .input-group input, .input-group select, .input-group button {
+      flex: 1 1 0; 
+      min-width: 100px; 
+    }
+    .input-group button {
+      flex-grow: 0; 
+    }
     input, button, textarea, select {
-      margin: 8px 0;
       padding: 12px;
       font-size: 16px;
       border: none;
       border-radius: 8px;
-      background-color: #3f3f6e;
-      color: #e0e0e0;
+      background-color: var(--color-input);
+      color: var(--color-text);
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    input::placeholder, textarea::placeholder {
-      color: #999;
+      box-sizing: border-box;
     }
     button {
-      background-color: #00e0b3;
-      color: #1a1a2e;
+      background-color: var(--color-accent);
+      color: var(--color-bg-main);
       cursor: pointer;
       font-weight: bold;
       transition: background-color 0.3s ease;
     }
     button:hover {
-      background-color: #00b38c;
+      background-color: color-mix(in srgb, var(--color-accent) 80%, black);
     }
-    .student, .task-item {
+    .student, .task-item, .event-item, .resource-item {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      margin: 10px 0;
-      padding: 15px;
-      border-radius: 10px;
-      background-color: #3a3a5a;
+      margin: 8px 0;
+      padding: 12px;
+      border-radius: 8px;
+      background-color: var(--color-bg-item);
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     }
-    .student span, .task-item span {
-      margin-right: 15px;
+    .student > *, .task-item > *, .event-item > *, .resource-item > * {
+        margin: 4px;
     }
-    .student button, .task-item button {
-      margin: 0 4px;
-      padding: 8px 12px;
+    .task-item.completed {
+        opacity: 0.6;
     }
     .task-item.completed span {
       text-decoration: line-through;
-      color: #888;
+      color: var(--color-text-dim);
     }
-    .section {
-      margin-top: 30px;
-      padding: 20px;
-      border-radius: 15px;
-      background-color: #2d2d4d;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    .item-controls {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
     }
-    textarea {
-      width: 100%;
-      min-height: 120px;
+    .editor-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 10px;
+        background-color: var(--color-bg-item);
+        padding: 8px;
+        border-radius: 8px;
+        gap: 8px;
+    }
+    .editor-toolbar select, .editor-toolbar button {
+        padding: 8px;
+        margin: 0;
+        min-width: unset;
+        flex-grow: 0;
     }
     [contenteditable="true"] {
-      border: 2px solid #5d5d8e;
+      border: 2px solid var(--color-border);
       padding: 15px;
-      min-height: 200px;
-      background-color: #1a1a2e;
+      min-height: 150px;
+      background-color: var(--color-bg-main);
       width: 100%;
       border-radius: 10px;
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
       resize: vertical;
-    }
-    [contenteditable="true"]:focus {
-      outline: none;
-      border-color: #bb86fc;
-      box-shadow: 0 0 0 3px #bb86fc;
-    }
-    .alignment-buttons button {
-      background-color: #4a4a75;
-    }
-    .alignment-buttons button:hover {
-      background-color: #6a6a95;
+      overflow-y: auto;
     }
     #timerDisplay {
-      font-size: 2.5em;
-      font-family: 'Courier New', monospace;
-      color: #00e0b3;
-      text-align: center;
-      margin: 15px 0;
+      font-size: 2.2em;
+      color: var(--color-accent);
     }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.7);
-      align-items: center;
+    .timer-controls, .theme-buttons {
+      display: flex;
+      flex-wrap: wrap;
       justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
     }
-    .modal-content {
-      background-color: #2a2a44;
-      padding: 25px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    .resource-item a {
+        color: var(--color-accent);
+        text-decoration: none;
+        font-weight: bold;
     }
-    .modal-content h3 {
-      color: #00e0b3;
+    .resource-item a:hover {
+        text-decoration: underline;
+    }
+
+    @media screen and (max-width: 950px) {
+      .main-grid {
+        grid-template-columns: 1fr; 
+      }
+      .section-full {
+        grid-column: auto;
+      }
+    }
+    @media screen and (max-width: 500px) {
+      body {
+        padding: 10px;
+      }
+      .container {
+        padding: 10px;
+      }
+      .input-group {
+        flex-direction: column;
+      }
+      .input-group input, .input-group select, .input-group button {
+        width: 100%;
+        min-width: 0;
+      }
+      .editor-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
-<body>
+<body class="theme-default">
   <div class="container">
-    <h1><span style="color: #00e0b3;">🌟</span> School Planner <span style="color: #00e0b3;">🌟</span></h1>
-    <h2>By TaylorTech</h2>
+    <h1><span style="color: var(--color-accent);">🎓</span> School Planner V2 <span style="color: var(--color-accent);">🧠</span></h1>
 
-    <div class="section">
-      <h2>🧑‍🎓 Student Tracker</h2>
-      <input id="studentName" type="text" placeholder="Enter student name">
-      <button onclick="addStudent()">Add Student</button>
-      <div id="studentsList"></div>
+    <div class="section section-full">
+        <h2>🎨 App Settings</h2>
+        <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+            <div>
+                <strong>Theme:</strong>
+                <div class="theme-buttons">
+                    <button onclick="changeTheme('default')" style="background-color: #bb86fc;">Violet</button>
+                    <button onclick="changeTheme('green')" style="background-color: #00e676;">Green</button>
+                    <button onclick="changeTheme('red')" style="background-color: #ff5252;">Red</button>
+                </div>
+            </div>
+            <div>
+                <strong>Timer:</strong>
+                <div id="timerDisplay" style="text-align: center;">00:00</div>
+                <div class="timer-controls">
+                    <button onclick="startTimer()">▶️ Start</button>
+                    <button onclick="pauseTimer()">⏸️ Pause</button>
+                    <button onclick="resetTimer()">🔁 Reset</button>
+                    <button onclick="startPomodoro()">🍅 Pomodoro</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="section">
-      <h2>📝 Teacher Notes</h2>
-      <textarea id="teacherNotes" placeholder="Write your notes here..."></textarea><br>
-      <button onclick="saveNotes()">Save Notes</button>
-    </div>
+    <div class="main-grid">
+        <div class="section">
+            <h2>🧑‍🎓 Student Tracker</h2>
+            <div class="input-group">
+                <input id="studentName" type="text" placeholder="Student Name" onkeydown="if(event.key === 'Enter') addStudent()">
+                <button onclick="addStudent()">➕ Add</button>
+            </div>
+            <div id="studentsList"></div>
+        </div>
 
-    <div class="section">
-      <h2>✅ Task Manager</h2>
-      <input id="taskInput" type="text" placeholder="Add a new task">
-      <button onclick="addTask()">Add Task</button>
-      <ul id="taskList" style="list-style: none; padding: 0;"></ul>
-    </div>
+        <div class="section">
+            <h2>✅ Task Manager</h2>
+            <div class="input-group">
+                <input id="taskInput" type="text" placeholder="Task Description" onkeydown="if(event.key === 'Enter') addTask()">
+                <input id="taskDate" type="date">
+                <select id="taskPriority">
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+                <button onclick="addTask()">➕ Add</button>
+            </div>
+            <ul id="taskList" style="list-style: none; padding: 0;"></ul>
+            <button onclick="clearCompletedTasks()" style="background-color: #f06;">🗑️ Clear Completed</button>
+        </div>
 
-    <div class="section">
-      <h2>⏱️ Study Timer</h2>
-      <div id="timerDisplay">00:00</div>
-      <div style="text-align: center;">
-        <button onclick="startTimer()">Start</button>
-        <button onclick="pauseTimer()">Pause</button>
-        <button onclick="resetTimer()">Reset</button>
-      </div>
-    </div>
+        <div class="section">
+            <h2>🗓️ Simple Scheduler</h2>
+            <div class="input-group">
+                <input id="eventTitle" type="text" placeholder="Event Title (e.g., Exam)" onkeydown="if(event.key === 'Enter') addEvent()">
+                <input id="eventDate" type="date">
+                <button onclick="addEvent()">➕ Add Event</button>
+            </div>
+            <ul id="eventsList" style="list-style: none; padding: 0;"></ul>
+        </div>
 
-    <div class="section">
-      <h2>📚 Lesson Maker</h2>
-      <label for="fontSelector"><strong>Font Style:</strong></label>
-      <select id="fontSelector" onchange="changeFont('lessonEditor')">
-        <option value="Arial">Arial</option>
-        <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
-        <option value="'Times New Roman', serif">Times New Roman</option>
-        <option value="'Courier New', monospace">Courier New</option>
-        <option value="Verdana">Verdana</option>
-        <option value="'Roboto', sans-serif">Roboto</option>
-        <option value="'Montserrat', sans-serif">Montserrat</option>
-        <option value="'Fredoka', sans-serif">Fredoka</option>
-      </select>
-      <div class="alignment-buttons">
-        <strong>Text Alignment:</strong>
-        <button onclick="setAlignment('lessonEditor', 'Left')">⬅️</button>
-        <button onclick="setAlignment('lessonEditor', 'Center')">⏺</button>
-        <button onclick="setAlignment('lessonEditor', 'Right')">➡️</button>
-        <button onclick="setAlignment('lessonEditor', 'Full')">📏</button>
-      </div>
-      <div id="lessonEditor" contenteditable="true">
-        <p><strong>Lesson Title:</strong></p>
-        <p>Start typing your lesson content here...</p>
-      </div>
-      <br>
-      <button onclick="exportLessonAsPNG()">🖼 Export Lesson as PNG</button>
-    </div>
+        <div class="section">
+            <h2>🔗 Resource Hub</h2>
+            <div class="input-group">
+                <input id="resourceName" type="text" placeholder="Link/File Name" onkeydown="if(event.key === 'Enter') addResource()">
+                <input id="resourceURL" type="text" placeholder="URL or File Type (.pdf, .doc)">
+                <button onclick="addResource()">➕ Add Resource</button>
+            </div>
+            <ul id="resourcesList" style="list-style: none; padding: 0;"></ul>
+        </div>
 
-    <div class="section">
-      <h2>📽️ Slide Maker</h2>
-      <label for="slideFontSelector"><strong>Slide Font:</strong></label>
-      <select id="slideFontSelector" onchange="changeFont('slideEditor')">
-        <option value="Arial">Arial</option>
-        <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
-        <option value="'Times New Roman', serif">Times New Roman</option>
-        <option value="'Courier New', monospace">Courier New</option>
-        <option value="Verdana">Verdana</option>
-        <option value="'Roboto', sans-serif">Roboto</option>
-        <option value="'Montserrat', sans-serif">Montserrat</option>
-        <option value="'Fredoka', sans-serif">Fredoka</option>
-      </select>
-      <div class="alignment-buttons">
-        <strong>Text Alignment:</strong>
-        <button onclick="setAlignment('slideEditor', 'Left')">⬅️</button>
-        <button onclick="setAlignment('slideEditor', 'Center')">⏺</button>
-        <button onclick="setAlignment('slideEditor', 'Right')">➡️</button>
-        <button onclick="setAlignment('slideEditor', 'Full')">📏</button>
-      </div>
-      <div id="slideEditor" contenteditable="true">
-        <p><strong>Slide 1 Title</strong></p>
-        <p>This is your first slide.</p>
-      </div>
-      <br>
-      <button onclick="addSlide()">➕ Add Slide</button>
-      <button onclick="prevSlide()">⬅️ Previous</button>
-      <button onclick="nextSlide()">➡️ Next</button>
-      <button onclick="exportSlidesAsText()">📥 Export Slides</button>
-    </div>
+        <div class="section section-full">
+            <h2>📚 Lesson/Slide Editor</h2>
+            <div class="editor-toolbar">
+                <label for="editorSelect"><strong>Editor:</strong></label>
+                <select id="editorSelect" onchange="toggleEditor()">
+                    <option value="lessonEditor">Lesson Maker</option>
+                    <option value="slideEditor">Slide Maker</option>
+                </select>
 
+                <label for="fontSelector"><strong>Font:</strong></label>
+                <select id="fontSelector" onchange="changeFont(currentEditorId)">
+                    <option value="'Inter', sans-serif">Inter</option>
+                    <option value="'Montserrat', sans-serif">Montserrat</option>
+                    <option value="'Roboto', sans-serif">Roboto</option>
+                    <option value="Arial">Arial</option>
+                    <option value="'Times New Roman', serif">Times New Roman</option>
+                </select>
+                <label for="fontSizeSelector"><strong>Size:</strong></label>
+                <select id="fontSizeSelector" onchange="setFontSize(currentEditorId)">
+                    <option value="3">Normal</option>
+                    <option value="5">Large</option>
+                    <option value="7">Huge</option>
+                </select>
+                <button onclick="formatText(currentEditorId, 'bold')">B</button>
+                <button onclick="formatText(currentEditorId, 'italic')">I</button>
+                <button onclick="formatText(currentEditorId, 'underline')">U</button>
+                <button onclick="setAlignment(currentEditorId, 'Left')">⬅️</button>
+                <button onclick="setAlignment(currentEditorId, 'Center')">⏺</button>
+                <button onclick="setAlignment(currentEditorId, 'Right')">➡️</button>
+            </div>
+
+            <div id="lessonEditorContainer">
+                <h3 style="text-align: left; color: var(--color-text);">Lesson Maker</h3>
+                <div id="lessonEditor" contenteditable="true">
+                    <p><strong>Lesson Title:</strong></p>
+                    <p>Start typing your lesson content here...</p>
+                </div>
+                <br>
+                <button onclick="exportLessonAsPNG()" style="float: right;">🖼 Export Lesson as PNG</button>
+            </div>
+
+            <div id="slideEditorContainer" style="display:none;">
+                <h3 style="text-align: left; color: var(--color-text);">Slide Maker</h3>
+                <div id="slideEditor" contenteditable="true">
+                    <p><strong>Slide 1 Title</strong></p>
+                    <p>This is your first slide.</p>
+                </div>
+                <br>
+                <div style="text-align: center;">
+                    <button onclick="addSlide()">➕ Add Slide</button>
+                    <button onclick="prevSlide()">⬅️ Prev</button>
+                    <button onclick="nextSlide()">➡️ Next</button>
+                    <button onclick="exportSlidesAsText()">📥 Export Slides</button>
+                    <button onclick="deleteCurrentSlide()">🗑️ Delete</button>
+                    <p id="slideIndicator" style="margin-top: 10px;">Slide 1 of 1</p>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="section section-full">
+            <h2>📝 Teacher Notes</h2>
+            <textarea id="teacherNotes" placeholder="Write your persistent notes here..."></textarea><br>
+            <button onclick="saveNotes()">Save Notes</button>
+        </div>
+    </div>
   </div>
 
   <div id="customModal" class="modal">
@@ -243,16 +364,26 @@
 
   <script>
     let students = [];
-    let notes = '';
     let tasks = [];
+    let events = [];
+    let resources = [];
     let slides = [{ content: "<p><strong>Slide 1 Title</strong></p><p>This is your first slide.</p>" }];
     let currentSlideIndex = 0;
     let timerInterval = null;
     let timerSeconds = 0;
+    let isPomodoro = false;
+    let pomodoroStage = 'work';
+    let pomodoroWorkTime = 25 * 60;
+    let pomodoroBreakTime = 5 * 60;
+    let currentEditorId = 'lessonEditor';
 
     const studentsKey = 'students';
     const notesKey = 'teacherNotes';
     const tasksKey = 'tasks';
+    const eventsKey = 'events';
+    const resourcesKey = 'resources';
+    const slidesKey = 'slides';
+    const themeKey = 'theme';
 
     function showModal(message) {
       document.getElementById('modalMessage').innerText = message;
@@ -270,21 +401,48 @@
       if (storedNotes) document.getElementById('teacherNotes').value = storedNotes;
       const storedTasks = localStorage.getItem(tasksKey);
       if (storedTasks) tasks = JSON.parse(storedTasks);
+      const storedEvents = localStorage.getItem(eventsKey);
+      if (storedEvents) events = JSON.parse(storedEvents);
+      const storedResources = localStorage.getItem(resourcesKey);
+      if (storedResources) resources = JSON.parse(storedResources);
+      const storedSlides = localStorage.getItem(slidesKey);
+      if (storedSlides) {
+        slides = JSON.parse(storedSlides);
+        if (slides.length === 0) slides = [{ content: "<p><strong>Slide 1 Title</strong></p><p>This is your first slide.</p>" }];
+      }
+      const storedTheme = localStorage.getItem(themeKey);
+      if (storedTheme) changeTheme(storedTheme);
+
       renderStudents();
       renderTasks();
+      renderEvents();
+      renderResources();
+      renderCurrentSlide();
+      toggleEditor();
     }
 
     function saveData() {
       localStorage.setItem(studentsKey, JSON.stringify(students));
       localStorage.setItem(notesKey, document.getElementById('teacherNotes').value);
       localStorage.setItem(tasksKey, JSON.stringify(tasks));
+      localStorage.setItem(eventsKey, JSON.stringify(events));
+      localStorage.setItem(resourcesKey, JSON.stringify(resources));
+      saveCurrentSlide(); 
+      localStorage.setItem(slidesKey, JSON.stringify(slides));
     }
 
+    function changeTheme(themeName) {
+      const body = document.body;
+      body.className = '';
+      if (themeName !== 'default') body.classList.add(`theme-${themeName}`);
+      localStorage.setItem(themeKey, themeName);
+    }
+    
     function addStudent() {
       const nameInput = document.getElementById('studentName');
       const name = nameInput.value.trim();
       if (name) {
-        students.push({ name: name, points: 0 });
+        students.push({ name: name, points: 0, status: 'Active' });
         nameInput.value = '';
         saveData();
         renderStudents();
@@ -299,6 +457,13 @@
 
     function updatePoints(index, change) {
       students[index].points += change;
+      if (students[index].points < 0) students[index].points = 0;
+      saveData();
+      renderStudents();
+    }
+
+    function updateStatus(index, newStatus) {
+      students[index].status = newStatus;
       saveData();
       renderStudents();
     }
@@ -310,12 +475,16 @@
         const div = document.createElement('div');
         div.className = 'student';
         div.innerHTML = `
-          <span><strong>${student.name}</strong></span>
-          <span>Points: ${student.points}</span>
-          <div>
+          <span><strong>${student.name}</strong> (Pts: ${student.points})</span>
+          <select onchange="updateStatus(${index}, this.value)">
+            <option value="Active" ${student.status === 'Active' ? 'selected' : ''}>Active</option>
+            <option value="Absent" ${student.status === 'Absent' ? 'selected' : ''}>Absent</option>
+            <option value="Remote" ${student.status === 'Remote' ? 'selected' : ''}>Remote</option>
+          </select>
+          <div class="item-controls">
             <button onclick="updatePoints(${index}, 1)">+1</button>
             <button onclick="updatePoints(${index}, -1)">-1</button>
-            <button onclick="removeStudent(${index})">Remove</button>
+            <button onclick="removeStudent(${index})" style="background-color: #f06;">X</button>
           </div>
         `;
         container.appendChild(div);
@@ -329,10 +498,19 @@
 
     function addTask() {
       const taskInput = document.getElementById('taskInput');
+      const taskDate = document.getElementById('taskDate');
+      const taskPriority = document.getElementById('taskPriority');
       const taskText = taskInput.value.trim();
       if (taskText) {
-        tasks.push({ text: taskText, completed: false });
+        tasks.push({ 
+            text: taskText, 
+            completed: false, 
+            date: taskDate.value, 
+            priority: taskPriority.value 
+        });
         taskInput.value = '';
+        taskDate.value = '';
+        taskPriority.value = 'Low';
         saveData();
         renderTasks();
       }
@@ -350,21 +528,122 @@
       renderTasks();
     }
 
+    function clearCompletedTasks() {
+        tasks = tasks.filter(task => !task.completed);
+        saveData();
+        renderTasks();
+    }
+
     function renderTasks() {
       const taskList = document.getElementById('taskList');
       taskList.innerHTML = '';
+
+      const priorityOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
+
+      tasks.sort((a, b) => {
+        if (a.completed !== b.completed) return a.completed ? 1 : -1;
+        
+        const dateA = a.date ? new Date(a.date) : new Date(8640000000000000);
+        const dateB = b.date ? new Date(b.date) : new Date(8640000000000000);
+        if (dateA - dateB !== 0) return dateA - dateB;
+        
+        return priorityOrder[b.priority] - priorityOrder[a.priority];
+      });
+
       tasks.forEach((task, index) => {
         const li = document.createElement('li');
         li.className = 'task-item' + (task.completed ? ' completed' : '');
+        const dateString = task.date ? new Date(task.date).toLocaleDateString() : 'No Date';
+        const priorityColor = task.priority === 'High' ? 'var(--color-primary)' : task.priority === 'Medium' ? 'var(--color-accent)' : 'var(--color-text-dim)';
+        
         li.innerHTML = `
-          <span style="flex-grow: 1;">${task.text}</span>
-          <div>
+          <span>${task.text}</span>
+          <span style="font-size: 0.9em; color: ${priorityColor};">${task.priority} (${dateString})</span>
+          <div class="item-controls">
             <button onclick="toggleTask(${index})">${task.completed ? 'Uncheck' : 'Check'}</button>
-            <button onclick="deleteTask(${index})">Delete</button>
+            <button onclick="deleteTask(${index})" style="background-color: #f06;">Delete</button>
           </div>
         `;
         taskList.appendChild(li);
       });
+    }
+
+    function addEvent() {
+        const titleInput = document.getElementById('eventTitle');
+        const dateInput = document.getElementById('eventDate');
+        const title = titleInput.value.trim();
+        const date = dateInput.value;
+        if (title && date) {
+            events.push({ title: title, date: date });
+            titleInput.value = '';
+            dateInput.value = '';
+            saveData();
+            renderEvents();
+        }
+    }
+
+    function deleteEvent(index) {
+        events.splice(index, 1);
+        saveData();
+        renderEvents();
+    }
+
+    function renderEvents() {
+        const eventsList = document.getElementById('eventsList');
+        eventsList.innerHTML = '';
+
+        events.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        events.forEach((event, index) => {
+            const dateStr = new Date(event.date).toLocaleDateString();
+            const li = document.createElement('li');
+            li.className = 'event-item';
+            li.innerHTML = `
+                <span>🗓️ <strong>${event.title}</strong></span>
+                <span>${dateStr}</span>
+                <button onclick="deleteEvent(${index})" style="background-color: #f06;">X</button>
+            `;
+            eventsList.appendChild(li);
+        });
+    }
+
+    function addResource() {
+        const nameInput = document.getElementById('resourceName');
+        const urlInput = document.getElementById('resourceURL');
+        const name = nameInput.value.trim();
+        const url = urlInput.value.trim();
+        if (name && url) {
+            resources.push({ name: name, url: url });
+            nameInput.value = '';
+            urlInput.value = '';
+            saveData();
+            renderResources();
+        }
+    }
+
+    function deleteResource(index) {
+        resources.splice(index, 1);
+        saveData();
+        renderResources();
+    }
+
+    function renderResources() {
+        const resourcesList = document.getElementById('resourcesList');
+        resourcesList.innerHTML = '';
+        resources.forEach((resource, index) => {
+            const isLink = resource.url.startsWith('http');
+            const linkTag = isLink 
+                ? `<a href="${resource.url}" target="_blank">${resource.name}</a>`
+                : `<span>${resource.name} (${resource.url})</span>`;
+
+            const li = document.createElement('li');
+            li.className = 'resource-item';
+            li.innerHTML = `
+                ${linkTag}
+                <button onclick="deleteResource(${index})" style="background-color: #f06;">Delete</button>
+            `;
+            resourcesList.appendChild(li);
+        });
     }
 
     function formatTime(seconds) {
@@ -375,12 +654,34 @@
       return `${paddedMinutes}:${paddedSeconds}`;
     }
 
+    function setTimerDisplay() {
+        document.getElementById('timerDisplay').innerText = formatTime(timerSeconds);
+    }
+    
+    function timerTick() {
+      timerSeconds--;
+      setTimerDisplay();
+
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        if (isPomodoro) {
+            pomodoroCycle();
+        } else {
+            showModal("Time's up!");
+            document.getElementById('timerDisplay').innerText = '00:00';
+        }
+      }
+    }
+
     function startTimer() {
-      if (!timerInterval) {
-        timerInterval = setInterval(() => {
-          timerSeconds++;
-          document.getElementById('timerDisplay').innerText = formatTime(timerSeconds);
-        }, 1000);
+      if (!timerInterval && timerSeconds > 0) {
+        timerInterval = setInterval(timerTick, 1000);
+      } else if (!timerInterval && timerSeconds === 0) {
+        timerSeconds = 600; 
+        isPomodoro = false;
+        setTimerDisplay();
+        timerInterval = setInterval(timerTick, 1000);
       }
     }
 
@@ -392,12 +693,61 @@
     function resetTimer() {
       pauseTimer();
       timerSeconds = 0;
+      isPomodoro = false;
+      pomodoroStage = 'work';
       document.getElementById('timerDisplay').innerText = '00:00';
     }
 
+    function startPomodoro() {
+        isPomodoro = true;
+        pomodoroStage = 'work';
+        timerSeconds = pomodoroWorkTime;
+        setTimerDisplay();
+        startTimer();
+        showModal('Pomodoro started: Work Time (25 minutes)');
+    }
+
+    function pomodoroCycle() {
+        if (pomodoroStage === 'work') {
+            pomodoroStage = 'break';
+            timerSeconds = pomodoroBreakTime;
+            showModal('Work time finished! Take a 5 minute break.');
+        } else {
+            pomodoroStage = 'work';
+            timerSeconds = pomodoroWorkTime;
+            showModal('Break finished! Starting next 25 minute work session.');
+        }
+        setTimerDisplay();
+        startTimer();
+    }
+
+    function toggleEditor() {
+        const selector = document.getElementById('editorSelect');
+        const lessonContainer = document.getElementById('lessonEditorContainer');
+        const slideContainer = document.getElementById('slideEditorContainer');
+        
+        currentEditorId = selector.value;
+        
+        if (currentEditorId === 'lessonEditor') {
+            lessonContainer.style.display = 'block';
+            slideContainer.style.display = 'none';
+        } else {
+            lessonContainer.style.display = 'none';
+            slideContainer.style.display = 'block';
+        }
+        
+        document.getElementById('fontSelector').value = document.getElementById(currentEditorId).style.fontFamily.replace(/['"]+/g, '') || "'Inter', sans-serif";
+    }
+
     function changeFont(editorId) {
-      const font = document.getElementById(editorId === 'lessonEditor' ? 'fontSelector' : 'slideFontSelector').value;
+      const font = document.getElementById('fontSelector').value;
       document.getElementById(editorId).style.fontFamily = font;
+    }
+
+    function setFontSize(editorId) {
+        const size = document.getElementById('fontSizeSelector').value;
+        document.getElementById(editorId).focus();
+        document.execCommand('fontSize', false, size);
     }
 
     function setAlignment(editorId, alignType) {
@@ -406,9 +756,16 @@
       document.execCommand('justify' + alignType);
     }
 
+    function formatText(editorId, command) {
+        document.getElementById(editorId).focus();
+        document.execCommand(command, false, null);
+    }
+
     async function exportLessonAsPNG() {
       const lessonEditor = document.getElementById('lessonEditor');
-      const canvas = await html2canvas(lessonEditor, { backgroundColor: "#1a1a2e" });
+      const canvas = await html2canvas(lessonEditor, { 
+          backgroundColor: getComputedStyle(document.body).getPropertyValue('--color-bg-main') 
+      });
       const link = document.createElement('a');
       link.download = 'lesson.png';
       link.href = canvas.toDataURL('image/png');
@@ -416,9 +773,22 @@
     }
 
     function addSlide() {
-      slides.push({ content: "<p>New Slide</p>" });
+      saveCurrentSlide();
+      slides.push({ content: "<p>New Slide Title</p><p>New slide content...</p>" });
       currentSlideIndex = slides.length - 1;
       renderCurrentSlide();
+    }
+
+    function deleteCurrentSlide() {
+        if (slides.length <= 1) {
+            showModal("Cannot delete the only slide.");
+            return;
+        }
+        saveCurrentSlide();
+        slides.splice(currentSlideIndex, 1);
+        currentSlideIndex = Math.min(currentSlideIndex, slides.length - 1);
+        saveData();
+        renderCurrentSlide();
     }
 
     function prevSlide() {
@@ -444,14 +814,17 @@
     function renderCurrentSlide() {
       const slideEditor = document.getElementById("slideEditor");
       slideEditor.innerHTML = slides[currentSlideIndex].content;
-      const font = document.getElementById("slideFontSelector").value;
-      slideEditor.style.fontFamily = font;
+      slideEditor.style.fontFamily = document.getElementById('fontSelector').value;
+      document.getElementById('slideIndicator').innerText = `Slide ${currentSlideIndex + 1} of ${slides.length}`;
     }
 
     function exportSlidesAsText() {
       saveCurrentSlide();
       const zip = new JSZip();
-      const slideText = slides.map((s, i) => `--- SLIDE ${i + 1} ---\n\n${s.content.replace(/<[^>]*>/g, '')}`).join("\n\n");
+      const slideText = slides.map((s, i) => {
+          const content = s.content.replace(/<[^>]*>/g, '').trim();
+          return `--- SLIDE ${i + 1} ---\n\n${content}`;
+      }).join("\n\n");
       zip.file("slides.txt", slideText);
       zip.generateAsync({ type: "blob" }).then(content => {
         const link = document.createElement('a');
